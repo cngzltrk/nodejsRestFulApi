@@ -1,6 +1,8 @@
 # nodejsRestFulApi
 
-orm squelize
+orm sequelize 
+
+Basic crud app
 
 get all /api/employee <br>
 get by id /api/employee/:id<br>
