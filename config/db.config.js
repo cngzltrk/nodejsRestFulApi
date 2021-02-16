@@ -1,17 +1,28 @@
-const mysql=require('mysql');
 
 // create here mysql conneciton
+const { Sequelize } = require('sequelize');
 
-const dbConn=mysql.createConnection({
-        host:'localhost',
-        user:'root',
-        password:'123456',
-        database:'node_mysql_crud_db'
-    });
-    
-dbConn.connect(function(err){
-    if(err) throw err;;
-    console.log('Database connected successfuly!!');
-});
 
-module.exports =dbConn;
+const sequelize = new Sequelize('node_mysql_crud_db', 'root', '123456', {
+    host: 'localhost',
+    dialect: 'mysql',
+    define: {
+        freezeTableName: true
+      }
+  });
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
+
+sequelize.sync({ alter : true})
+  .then(() => {
+    console.log(`Database & tables created!`);
+  });
+
+module.exports =sequelize;

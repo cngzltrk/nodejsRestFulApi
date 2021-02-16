@@ -3,55 +3,39 @@ const employeeModel=require('../models/employee.model');
 
 //get all employee list
 exports.getEmployeeList=(req,res)=>{
-    employeeModel.getAllEmployees((err,employees)=>{
-       
-        if(err) res.send(err);
-        res.send(employees);
-    })
+    employeeModel.findAll().then(notes => res.json(notes));
+
 }
 
 exports.getEmployeeById=(req,res)=>{
-    employeeModel.getEmployeeByid(req.params.id,(err,employees)=>{
-       
-        if(err) res.send(err);
-        res.send(employees);
-    })
+    employeeModel.findAll({ where: { id: req.params.id } }).then(notes => res.json(notes));
 }
 
 exports.createNewEmployee=(req,res)=>{
-    const employeReqData=new employeeModel(req.body);
-    employeeModel.createEmployee(employeReqData,(err,employee)=>{
-        if(err){
-            res.send(err);
-            res.json({status: false,message:'Employe created failed'})
-        }
-        else{
-            res.json({status: true,message:'Employe created successfuly!!',data:employee})
-        }
-    })
+   employeeModel.create({
+        name : req.body.name,
+        last_name:req.body.last_name,
+        email:req.body.email}).then(function(note) {
+            res.json(note);
+          });
 }
 
 exports.updateEmployee=(req,res)=>{
-    const employeReqData=new employeeModel(req.body);
-    employeeModel.updateEmployee(req.params.id,employeReqData,(err,employee)=>{
-        if(err){
-            res.send(err);
-            res.json({status: false,message:'Employe updated failed'})
-        }
-        else{
-            res.json({status: true,message:'Employe updated successfuly!!'})
-        }
-    })
+    employeeModel.findByPk(req.params.id).then(function(note) {
+        note.update({
+            name : req.body.name,
+            last_name:req.body.last_name,
+            email:req.body.email
+        }).then((note) => {
+          res.json(note);
+        });
+      });
 }
 
 exports.deleteEmployee=(req,res)=>{
-    employeeModel.deleteEmployee(req.params.id,(err,employee)=>{
-        if(err){
-            res.send(err);
-            res.json({status: false,message:'Employe deleted failed'})
-        }
-        else{
-            res.json({status: true,message:'Employe deleted successfuly!!'})
-        }
-    })
+    employeeModel.findByPk(req.params.id).then(function(note) {
+        note.destroy();
+      }).then((note) => {
+        res.sendStatus(200);
+      });
 }
